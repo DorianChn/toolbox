@@ -36,7 +36,7 @@
 > Honest status: ~10 weeks in. The full pipeline runs end-to-end on my own repos: capture + backfill + semantic search + export. The 50-example eval set classifies at ~94-96% with `qwen3:0.6b` (run it yourself: `capsule eval`).
 >
 > Install: `pip install devcapsule && capsule init`
-> Repo: github.com/<your-handle>/devcapsule (MIT)
+> Repo: github.com/DorianChn/devcapsule (MIT)
 >
 > Questions I'd love your take on:
 > 1. Would you actually review/edit auto-generated capsules, or does "garbage in garbage out" kill it for you?

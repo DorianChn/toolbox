@@ -21,6 +21,11 @@ classifiers = [
 ]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/DorianChn/devcapsule"
+Repository = "https://github.com/DorianChn/devcapsule"
+Issues = "https://github.com/DorianChn/devcapsule/issues"
+
 [project.optional-dependencies]
 # 本地 embedding：pip install devcapsule[local]
 local = ["sentence-transformers>=2.2"]
