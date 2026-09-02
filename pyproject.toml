@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devcapsule"
+version = "0.1.0"
+description = "Local-first developer experience library: turn fixed bugs into searchable answers"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "devcapsule" }]
+keywords = ["git", "knowledge-base", "llm", "cli", "local-first", "developer-tools"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Documentation",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+]
+dependencies = []
+
+[project.optional-dependencies]
+# 本地 embedding：pip install devcapsule[local]
+local = ["sentence-transformers>=2.2"]
+# OpenAI 兼容 API
+api = ["httpx>=0.24"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+capsule = "devcapsule.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
