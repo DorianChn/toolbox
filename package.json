@@ -1,0 +1,36 @@
+{
+  "name": "devkit-cli",
+  "version": "1.0.0",
+  "description": "A zero-dependency Swiss Army knife CLI for everyday developer tasks.",
+  "type": "module",
+  "bin": {
+    "devkit": "./bin/devkit.js"
+  },
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "start": "node ./bin/devkit.js",
+    "test": "node --test test/*.test.js",
+    "link": "npm link"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "cli",
+    "devtools",
+    "hash",
+    "uuid",
+    "json",
+    "productivity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {}
+}
