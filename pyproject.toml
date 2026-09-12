@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-project"
+version = "0.1.0"
+description = "一个用 Python 写的项目脚手架"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    # 在这里添加你的第三方依赖，例如：
+    # "requests>=2.31.0",
+]
+
+[tool.setuptools]
+py-modules = ["main"]
