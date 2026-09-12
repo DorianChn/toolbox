@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { parseArgs, UsageError } from '../args.js';
 import { green, gray } from '../colors.js';
 
@@ -28,7 +29,6 @@ export function decode(text, { urlSafe = false } = {}) {
 async function readInput(flags, positional) {
   if (positional.length > 0) return { text: positional.join(' '), source: 'argument' };
   if (flags.file) {
-    const { readFile } = await import('node:fs/promises');
     return { text: await readFile(String(flags.file), 'utf8'), source: flags.file };
   }
   if (!process.stdin.isTTY) {

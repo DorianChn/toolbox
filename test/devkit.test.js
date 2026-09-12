@@ -1,15 +1,39 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
 
+import { VERSION } from '../src/version.js';
 import { hashText, hashStream } from '../src/commands/hash.js';
 import { generate } from '../src/commands/uuid.js';
 import { sortDeep, describeShape } from '../src/commands/json.js';
 import { encode, decode } from '../src/commands/b64.js';
-import { generatePassword, generatePin, entropyBits } from '../src/commands/pass.js';
+import { generatePassword, generatePin, entropyBits, alphabetSize } from '../src/commands/pass.js';
 import { interpret, describe } from '../src/commands/ts.js';
 import { parseArgs, readInt, UsageError } from '../src/args.js';
+
+test('VERSION stays in sync with package.json', () => {
+  const pkg = JSON.parse(
+    readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+  );
+  assert.equal(VERSION, pkg.version);
+  assert.match(VERSION, /^\d+\.\d+\.\d+/);
+});
+
+test('alphabetSize reflects the real alphabets', () => {
+  // Guards the entropy estimate against silently drifting if the character
+  // sets are ever edited: these must be derived, never hardcoded.
+  assert.equal(alphabetSize(), 57);
+  assert.equal(alphabetSize({ symbols: true }), 80);
+  assert.equal(entropyBits(alphabetSize(), 20), Math.round(20 * Math.log2(57)));
+});
+
+test('generatePassword only draws from the declared alphabet', () => {
+  const plain = generatePassword(200);
+  assert.doesNotMatch(plain, /[^a-zA-Z2-9]/);
+  assert.doesNotMatch(plain, /[lIO01]/);
+});
 
 test('hashText matches node crypto', () => {
   const expected = createHash('sha256').update('hello', 'utf8').digest('hex');

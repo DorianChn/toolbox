@@ -36,7 +36,7 @@ Node.js **18 or newer**. That's it — there are no runtime dependencies.
 Clone and link it globally:
 
 ```bash
-git clone <your-repo-url> devkit-cli
+git clone https://github.com/DorianChn/devkit-cli.git
 cd devkit-cli
 npm link
 ```

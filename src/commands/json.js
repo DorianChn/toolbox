@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { parseArgs, UsageError } from '../args.js';
+import { parseArgs, readInt, UsageError } from '../args.js';
 import { green, yellow, gray } from '../colors.js';
 
 export const meta = {
@@ -59,9 +59,14 @@ export async function run(argv) {
 
   const tree = flags['sort-keys'] ? sortDeep(parsed) : parsed;
 
+  const indent = readInt(flags, 'indent', 2);
+  if (indent < 0 || indent > 10) {
+    throw new UsageError('--indent must be a number between 0 and 10');
+  }
+
   const output = flags.minify
     ? JSON.stringify(tree)
-    : JSON.stringify(tree, null, Number(flags.indent ?? 2));
+    : JSON.stringify(tree, null, indent);
 
   console.log(output);
 

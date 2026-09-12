@@ -1,5 +1,6 @@
 import { commands } from '../index.js';
 import { VERSION } from '../version.js';
+import { UsageError } from '../args.js';
 import { bold, cyan, gray, magenta } from '../colors.js';
 
 export const meta = {
@@ -68,7 +69,6 @@ export async function run(argv) {
   if (target) {
     const detail = renderDetail(target);
     if (!detail) {
-      const { UsageError } = await import('../args.js');
       throw new UsageError(`no help available for "${target}"`);
     }
     console.log(detail);

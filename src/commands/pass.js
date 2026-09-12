@@ -1,5 +1,5 @@
 import { randomInt, randomBytes } from 'node:crypto';
-import { parseArgs, readInt } from '../args.js';
+import { parseArgs, readInt, UsageError } from '../args.js';
 import { yellow, gray, bold } from '../colors.js';
 
 export const meta = {
@@ -49,15 +49,25 @@ export function entropyBits(alphabetSize, length) {
   return Math.round(length * Math.log2(alphabetSize));
 }
 
+/**
+ * Size of the alphabet actually used.
+ *
+ * Derived from the constants rather than hardcoded, so adding or removing a
+ * character can never leave the entropy estimate quietly lying.
+ */
+export function alphabetSize({ symbols = false } = {}) {
+  return (LOWER + UPPER + DIGITS + (symbols ? SYMBOLS : '')).length;
+}
+
 export async function run(argv) {
   const { flags } = parseArgs(argv, { alias: { n: 'count', l: 'length' } });
 
   const length = readInt(flags, 'length', 20);
   const count = readInt(flags, 'count', 1);
 
-  if (length < 4) throw new (await import('../args.js')).UsageError('--length must be at least 4');
+  if (length < 4) throw new UsageError('--length must be at least 4');
   if (count < 1 || count > 100) {
-    throw new (await import('../args.js')).UsageError('--count must be between 1 and 100');
+    throw new UsageError('--count must be between 1 and 100');
   }
 
   const symbols = Boolean(flags.symbols);
@@ -70,8 +80,7 @@ export async function run(argv) {
   }
 
   if (count === 1 && !flags.pin) {
-    const alphabetSize = 60 + (symbols ? SYMBOLS.length : 0);
-    const bits = entropyBits(alphabetSize, length);
+    const bits = entropyBits(alphabetSize({ symbols }), length);
     console.error(gray(`  ${bold(length)} chars · ~${bits} bits of entropy`));
   }
 

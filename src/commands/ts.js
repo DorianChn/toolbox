@@ -1,4 +1,4 @@
-import { parseArgs } from '../args.js';
+import { parseArgs, UsageError } from '../args.js';
 import { blue, gray, cyan } from '../colors.js';
 
 export const meta = {
@@ -70,7 +70,6 @@ export async function run(argv) {
 
   const date = interpret(positional[0], { assumeMs: Boolean(flags.ms) });
   if (!date) {
-    const { UsageError } = await import('../args.js');
     throw new UsageError(`could not parse date "${positional[0]}"`);
   }
 

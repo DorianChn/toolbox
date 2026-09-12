@@ -1,5 +1,5 @@
-import { randomUUID, randomBytes } from 'node:crypto';
-import { parseArgs, readInt } from '../args.js';
+import { randomUUID } from 'node:crypto';
+import { parseArgs, readInt, UsageError } from '../args.js';
 import { cyan, gray } from '../colors.js';
 
 export const meta = {
@@ -28,7 +28,7 @@ export async function run(argv) {
 
   const count = readInt(flags, 'count', 1);
   if (count < 1 || count > 10000) {
-    throw new (await import('../args.js')).UsageError('--count must be between 1 and 10000');
+    throw new UsageError('--count must be between 1 and 10000');
   }
 
   const ids = generate(count, {
@@ -39,7 +39,5 @@ export async function run(argv) {
   for (const id of ids) console.log(cyan(id));
 
   if (count > 1) console.log(gray(`  ${count} ids generated`));
-  // randomBytes is imported to keep the crypto surface explicit in one place.
-  void randomBytes;
   return 0;
 }

@@ -1,5 +1,4 @@
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { parseArgs, UsageError } from '../args.js';
 import { gray, green, bold } from '../colors.js';
@@ -94,6 +93,3 @@ export async function run(argv) {
 
   return 0;
 }
-
-// Silence unused-import lint in environments without an linter.
-void readFile;

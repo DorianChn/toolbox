@@ -10,6 +10,7 @@
 
 import { run } from '../src/index.js';
 import { VERSION } from '../src/version.js';
+import { red, gray } from '../src/colors.js';
 
 const argv = process.argv.slice(2);
 
@@ -24,7 +25,7 @@ try {
   process.exit(code ?? 0);
 } catch (error) {
   const label = error?.name === 'UsageError' ? 'Usage' : 'Error';
-  console.error(`\x1b[31m${label}:\x1b[0m ${error?.message ?? error}`);
-  if (error?.hint) console.error(`\x1b[90mHint: ${error.hint}\x1b[0m`);
+  console.error(`${red(`${label}:`)} ${error?.message ?? error}`);
+  if (error?.hint) console.error(gray(`Hint: ${error.hint}`));
   process.exit(1);
 }

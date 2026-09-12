@@ -1,6 +1,6 @@
 {
   "name": "devkit-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A zero-dependency Swiss Army knife CLI for everyday developer tasks.",
   "type": "module",
   "bin": {
@@ -30,7 +30,15 @@
     "json",
     "productivity"
   ],
-  "author": "",
+  "author": "DorianChn",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DorianChn/devkit-cli.git"
+  },
+  "homepage": "https://github.com/DorianChn/devkit-cli#readme",
+  "bugs": {
+    "url": "https://github.com/DorianChn/devkit-cli/issues"
+  },
   "dependencies": {}
 }
