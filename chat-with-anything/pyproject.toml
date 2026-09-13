@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chat-with-anything"
+version = "0.1.1"
+description = "一行命令，把任意数据源（网页/PDF/文档/GitHub 仓库）变成能提问的 AI 助手"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "cwa contributors" }]
+keywords = ["rag", "llm", "ai", "chatbot", "llamaindex", "cli"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "typer>=0.9",
+    "rich>=13.0",
+    "llama-index-core>=0.10.0",
+    "llama-index-readers-web>=0.1.0",
+    "llama-index-readers-file>=0.1.0",
+    "llama-index-readers-github>=0.1.0",
+    "llama-index-embeddings-huggingface>=0.2.0",
+    "llama-index-embeddings-ollama>=0.1.0",
+    "llama-index-vector-stores-chroma>=0.1.0",
+    "chromadb>=0.4.0",
+    "llama-index-llms-openai-like>=0.1.0",
+    "llama-index-llms-ollama>=0.1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "ruff>=0.1"]
+
+[project.scripts]
+cwa = "cwa.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
