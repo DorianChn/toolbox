@@ -1,4 +1,4 @@
-# my-project
+# python-scaffold
 
 一个用 Python 写的项目脚手架。
 
@@ -23,7 +23,7 @@ python main.py
 ## 项目结构
 
 ```
-my-project/
+python-scaffold/
 ├── main.py          # 程序入口
 ├── pyproject.toml   # 项目元数据与依赖
 ├── .gitignore       # Git 忽略规则
