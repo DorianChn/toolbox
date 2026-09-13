@@ -1,4 +1,5 @@
 # devkit
+![CI](https://github.com/DorianChn/devkit-cli/actions/workflows/ci.yml/badge.svg)
 
 A zero-dependency Swiss Army knife for everyday developer tasks.
 
