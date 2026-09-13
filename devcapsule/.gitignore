@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.venv/
+venv/
+.capsule/
+demo-data/
+demo-gif/frames/
+examples/_demo/

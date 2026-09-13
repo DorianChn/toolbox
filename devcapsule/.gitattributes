@@ -1,0 +1,6 @@
+# Normalize line endings to LF for cross-platform consistency (CI runs on Linux).
+* text=auto
+
+# Keep these as-is (no newline conversion).
+*.png binary
+*.gif binary
