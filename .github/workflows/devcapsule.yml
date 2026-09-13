@@ -1,0 +1,49 @@
+name: devcapsule
+
+on:
+  push:
+    branches: [main]
+    paths: ["devcapsule/**"]
+  pull_request:
+    paths: ["devcapsule/**"]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        working-directory: devcapsule
+        run: pip install -e ".[dev]"
+      - name: Test
+        working-directory: devcapsule
+        run: pytest -q
+
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Build wheel + sdist
+        working-directory: devcapsule
+        run: |
+          pip install build
+          python -m build --sdist --wheel --outdir dist
+      - name: Install from wheel
+        working-directory: devcapsule
+        run: pip install dist/*.whl
+      - name: CLI smoke test
+        working-directory: devcapsule
+        run: |
+          capsule --version
+          capsule --help
+          capsule config list

@@ -1,4 +1,4 @@
-name: CI
+name: devkit-cli
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  devkit-cli:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,6 +19,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - name: Run devkit-cli tests (zero-dependency, no install)
+      - name: Run tests (zero-dependency, no install)
         working-directory: devkit-cli
         run: npm test

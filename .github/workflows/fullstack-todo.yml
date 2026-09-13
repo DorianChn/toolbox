@@ -1,0 +1,37 @@
+name: fullstack-todo
+
+on:
+  push:
+    branches: [main]
+    paths: ["fullstack-todo/**"]
+  pull_request:
+    paths: ["fullstack-todo/**"]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: Build & Typecheck (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: fullstack-todo/package-lock.json
+      - name: Install dependencies
+        working-directory: fullstack-todo
+        run: npm ci
+      - name: Typecheck
+        working-directory: fullstack-todo
+        run: npm run typecheck
+      - name: Build
+        working-directory: fullstack-todo
+        run: npm run build
+      - name: API smoke test
+        working-directory: fullstack-todo
+        run: npm run test --workspace server
