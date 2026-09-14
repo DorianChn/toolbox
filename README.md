@@ -17,4 +17,5 @@
 
 - 这些工具原本是独立仓库，2026-09 合并进本仓库统一维护；原仓库已归档并指向这里。
 - 每个子目录就是一个完整可独立运行的项目，按其内部 README 使用即可。
-- CI 目前覆盖 `devkit-cli`（改到对应目录才会触发）。
+- CI 覆盖 `devkit-cli`、`devcapsule`、`fullstack-todo`、`svcboard`、
+  `chat-with-anything` 和 `python-scaffold`（改到对应目录才会触发）；另有 CodeQL 扫描。
