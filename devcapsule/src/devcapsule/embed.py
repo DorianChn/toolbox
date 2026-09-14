@@ -8,6 +8,7 @@ Local-first, with a three-tier strategy:
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 import os
 import re
@@ -40,7 +41,13 @@ class BuiltinEmbedder:
         toks = _tokenize(text)
         vec = [0.0] * self.DIM
         for t in toks:
-            vec[hash(t) % self.DIM] += 1.0
+            # Python's hash() is process-randomized, which made the fallback
+            # rank different between CLI runs and caused avoidable collisions.
+            bucket = int.from_bytes(
+                hashlib.blake2b(t.encode("utf-8"), digest_size=4).digest(),
+                "big",
+            ) % self.DIM
+            vec[bucket] += 1.0
         norm = math.sqrt(sum(v * v for v in vec)) or 1.0
         return [v / norm for v in vec]
 

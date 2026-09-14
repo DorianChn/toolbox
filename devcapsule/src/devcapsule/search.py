@@ -1,7 +1,7 @@
 """Search: index capsule embeddings and rank by similarity."""
 from __future__ import annotations
 
-from .embed import Embedder, capsule_text, cosine
+from .embed import Embedder, _tokenize, capsule_text, cosine
 from .store import Store
 
 
@@ -23,6 +23,7 @@ def ensure_embeddings(store: Store, embedder: Embedder) -> int:
 
 def search(store: Store, embedder: Embedder, query: str, k: int = 5):
     qvec = embedder.encode(query)
+    query_terms = set(_tokenize(query))
     results = []
     for row in store.all_embeddings():
         if row["model"] != embedder.name:
@@ -32,6 +33,11 @@ def search(store: Store, embedder: Embedder, query: str, k: int = 5):
         cap = store.get_capsule(row["capsule_id"])
         if cap is None:
             continue
+        cap_terms = set(_tokenize(capsule_text(cap)))
+        overlap = len(query_terms & cap_terms) / len(query_terms) if query_terms else 0.0
+        # Embeddings can collide in the dependency-free fallback. A small
+        # lexical signal keeps exact user terms as a deterministic tie-breaker.
+        score += 0.5 * overlap
         results.append((score, cap))
     results.sort(key=lambda x: x[0], reverse=True)
     return results[:k]
