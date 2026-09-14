@@ -1,5 +1,7 @@
 # chat-with-anything
 
+[![Validate](https://github.com/DorianChn/toolbox/actions/workflows/chat-with-anything.yml/badge.svg)](https://github.com/DorianChn/toolbox/actions/workflows/chat-with-anything.yml)
+
 > 一行命令，把任意数据源变成能提问的 AI 助手。
 > 网页、PDF、文档、目录、GitHub 仓库，通吃。
 

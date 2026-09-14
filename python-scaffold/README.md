@@ -1,5 +1,7 @@
 # python-scaffold
 
+[![Validate](https://github.com/DorianChn/toolbox/actions/workflows/python-scaffold.yml/badge.svg)](https://github.com/DorianChn/toolbox/actions/workflows/python-scaffold.yml)
+
 一个用 Python 写的项目脚手架。
 
 ## 环境要求

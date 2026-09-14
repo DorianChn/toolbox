@@ -1,5 +1,7 @@
 # svcboard
 
+[![CI](https://github.com/DorianChn/toolbox/actions/workflows/svcboard.yml/badge.svg)](https://github.com/DorianChn/toolbox/actions/workflows/svcboard.yml)
+
 > A local-first service board for your dev machine. See every port your computer is listening on — and which process owns it — in one glance.
 
 `svcboard` scans all listening TCP ports on your machine and shows the owning process, its command line, and a known-service hint. Output as a clean table, Markdown (drop it into a README), or JSON (pipe it anywhere).
