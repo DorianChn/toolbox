@@ -127,7 +127,12 @@ devkit ts
 devkit ts 1735689600
 devkit ts 2025-01-01T00:00:00Z
 devkit ts 1735689600000 --ms
+devkit ts 1735689600 --from-unix
+devkit ts 2025-01-01T00:00:00Z --to-ms
 ```
+
+Use `--from-unix` to require a numeric Unix timestamp (`--ms` interprets it as
+milliseconds); `--to-ms` prints only the epoch-millisecond result for scripts.
 
 ## Design notes
 

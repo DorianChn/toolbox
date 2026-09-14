@@ -10,6 +10,7 @@ export const meta = {
     'devkit ts 1735689600',
     'devkit ts 2026-01-01T00:00:00Z',
     'devkit ts 1735689600000 --ms',
+    'devkit ts 2025-01-01T00:00:00Z --to-ms',
   ],
 };
 
@@ -33,8 +34,10 @@ export function describe(date) {
  * Heuristic: all digits, and shorter than 8 chars is almost certainly not a
  * timestamp; 10 digits = seconds, 13 digits = milliseconds.
  */
-export function interpret(input, { assumeMs = false } = {}) {
+export function interpret(input, { assumeMs = false, fromUnix = false } = {}) {
   const trimmed = String(input).trim();
+
+  if (fromUnix && !/^-?\d+$/.test(trimmed)) return null;
 
   if (/^-?\d+$/.test(trimmed)) {
     const num = Number(trimmed);
@@ -58,26 +61,36 @@ function print(date) {
 
 export async function run(argv) {
   const { flags, positional } = parseArgs(argv, {
-    boolean: ['ms', 'quiet'],
+    boolean: ['ms', 'from-unix', 'to-ms', 'quiet'],
   });
 
   if (positional.length === 0) {
+    if (flags['from-unix']) {
+      throw new UsageError('--from-unix requires a numeric timestamp');
+    }
     const now = new Date();
+    if (flags['to-ms']) {
+      console.log(now.getTime());
+      return 0;
+    }
     console.error(gray('now'));
     print(now);
     return 0;
   }
 
-  const date = interpret(positional[0], { assumeMs: Boolean(flags.ms) });
+  const date = interpret(positional[0], {
+    assumeMs: Boolean(flags.ms),
+    fromUnix: Boolean(flags['from-unix']),
+  });
   if (!date) {
     throw new UsageError(`could not parse date "${positional[0]}"`);
   }
 
-  print(date);
-
   if (flags['to-ms']) {
-    console.log(gray(`  input treated as milliseconds`));
+    console.log(date.getTime());
+    return 0;
   }
 
+  print(date);
   return 0;
 }

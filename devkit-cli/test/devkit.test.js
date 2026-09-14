@@ -10,7 +10,7 @@ import { generate } from '../src/commands/uuid.js';
 import { sortDeep, describeShape } from '../src/commands/json.js';
 import { encode, decode } from '../src/commands/b64.js';
 import { generatePassword, generatePin, entropyBits, alphabetSize } from '../src/commands/pass.js';
-import { interpret, describe } from '../src/commands/ts.js';
+import { interpret, describe, run as runTimestamp } from '../src/commands/ts.js';
 import { parseArgs, readInt, UsageError } from '../src/args.js';
 
 test('VERSION stays in sync with package.json', () => {
@@ -123,6 +123,23 @@ test('interpret parses seconds and milliseconds timestamps', () => {
 test('interpret parses ISO strings and rejects garbage', () => {
   assert.equal(interpret('2025-01-01T00:00:00Z').getTime(), 1735689600000);
   assert.equal(interpret('not a date'), null);
+});
+
+test('interpret --from-unix requires a numeric timestamp', () => {
+  assert.equal(interpret('1735689600', { fromUnix: true }).toISOString(), '2025-01-01T00:00:00.000Z');
+  assert.equal(interpret('2025-01-01T00:00:00Z', { fromUnix: true }), null);
+});
+
+test('ts --to-ms emits only epoch milliseconds', async () => {
+  const output = [];
+  const originalLog = console.log;
+  console.log = (...args) => output.push(args.join(' '));
+  try {
+    await runTimestamp(['2025-01-01T00:00:00Z', '--to-ms']);
+  } finally {
+    console.log = originalLog;
+  }
+  assert.deepEqual(output, ['1735689600000']);
 });
 
 test('describe exposes unix and ms consistently', () => {
