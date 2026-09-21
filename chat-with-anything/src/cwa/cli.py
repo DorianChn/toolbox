@@ -6,7 +6,7 @@ import typer
 from rich.console import Console
 
 from . import __version__
-from .config import Config, load, set_value
+from .config import Config, display_config_value, load, set_value
 from .loaders import load as load_source
 from .pipeline import build_index
 from .store import list_indexes
@@ -115,7 +115,7 @@ def config(
     except KeyError as e:
         console.print(f"[red]{e}[/]")
         raise typer.Exit(code=1)
-    console.print(f"[green]已设置 {key} = {value}[/]")
+    console.print(f"[green]已设置 {key} = {display_config_value(key, value)}[/]")
 
 
 @app.command()
@@ -124,11 +124,7 @@ def show_config() -> None:
     cfg = load()
     console.print("[bold]当前配置:[/]")
     for k, v in cfg.__dict__.items():
-        if k == "api_key" and v:
-            v = v[:6] + "..." + v[-4:]
-        elif k == "api_key":
-            v = "(未配置)"
-        console.print(f"  {k}: {v}")
+        console.print(f"  {k}: {display_config_value(k, v)}")
 
 
 def main() -> None:

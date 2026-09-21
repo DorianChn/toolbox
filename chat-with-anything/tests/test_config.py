@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from cwa.config import Config, load, save, set_value
+from cwa.config import Config, display_config_value, load, save, set_value
 
 
 class ConfigTests(unittest.TestCase):
@@ -32,6 +32,15 @@ class ConfigTests(unittest.TestCase):
                 self.assertEqual(load().model, "test-model")
                 with self.assertRaises(KeyError):
                     set_value("not_a_config_key", "value")
+
+    def test_display_config_value_redacts_api_keys(self):
+        secret = "api-key-value-secret"
+        masked = display_config_value("api_key", secret)
+
+        self.assertEqual(masked, "api-ke...cret")
+        self.assertNotIn(secret, masked)
+        self.assertEqual(display_config_value("api_key", "short"), "****")
+        self.assertEqual(display_config_value("model", "local-model"), "local-model")
 
 
 if __name__ == "__main__":
