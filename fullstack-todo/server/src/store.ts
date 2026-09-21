@@ -10,6 +10,19 @@ export interface ListOptions {
   query?: string;
 }
 
+function isStoredTask(value: unknown): value is Task {
+  if (!value || typeof value !== 'object') return false;
+  const task = value as Record<string, unknown>;
+  return (
+    typeof task.id === 'string' &&
+    typeof task.title === 'string' &&
+    typeof task.notes === 'string' &&
+    (task.status === 'active' || task.status === 'done') &&
+    typeof task.createdAt === 'string' &&
+    typeof task.updatedAt === 'string'
+  );
+}
+
 /**
  * A tiny persistence layer backed by a single JSON file.
  *
@@ -34,25 +47,38 @@ class TaskStore {
   }
 
   private async read(): Promise<Task[]> {
-    if (this.cache) return this.cache;
+    if (this.cache !== null) return this.cache;
 
-    let tasks: Task[] = [];
+    let raw: string;
     try {
-      const raw = await readFile(DATA_FILE, 'utf8');
-      const parsed: unknown = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        tasks = (parsed as Task[]).filter((task) => task && typeof task.id === 'string');
-      }
+      raw = await readFile(DATA_FILE, 'utf8');
     } catch (error) {
       const code = (error as NodeJS.ErrnoException).code;
-      if (code !== 'ENOENT') {
-        console.warn(`[store] could not read ${DATA_FILE}, starting empty:`, error);
+      if (code === 'ENOENT') {
+        this.cache = [];
+        return this.cache;
       }
-      tasks = [];
+      throw new Error(`[store] could not read ${DATA_FILE} without risking data loss`, { cause: error });
+    }
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (error) {
+      throw new Error(`[store] invalid JSON in ${DATA_FILE}; refusing to overwrite it`, { cause: error });
+    }
+
+    if (!Array.isArray(parsed)) {
+      throw new Error(`[store] invalid task data in ${DATA_FILE}; refusing to overwrite it`);
+    }
+
+    const tasks = parsed.filter(isStoredTask);
+    if (tasks.length !== parsed.length) {
+      throw new Error(`[store] invalid task data in ${DATA_FILE}; refusing to overwrite it`);
     }
 
     this.cache = tasks;
-    return tasks;
+    return this.cache;
   }
 
   private async write(tasks: Task[]): Promise<void> {
