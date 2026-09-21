@@ -47,6 +47,17 @@ def test_install_preserves_existing_non_devcapsule_hook(repo):
     assert "devcapsule" in text, "devcapsule snippet not appended"
 
 
+def test_uninstall_preserves_existing_non_devcapsule_hook(repo):
+    hook = repo / "hooks" / "post-commit"
+    original = "#!/bin/sh\necho pre-existing\n"
+    hook.write_text(original, encoding="utf-8")
+
+    install(".")
+    assert uninstall(".")
+    assert hook.exists(), "the user's hook must not be deleted"
+    assert hook.read_text(encoding="utf-8") == original
+
+
 def test_uninstall_removes_only_devcapsule(repo):
     install(".")
     assert is_installed(".")

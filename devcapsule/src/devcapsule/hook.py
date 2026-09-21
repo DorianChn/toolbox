@@ -31,7 +31,7 @@ def install(cwd: str) -> Path:
         raise RuntimeError("not a git repository: " + cwd)
     hook = gd / "hooks" / HOOK_NAME
     hook.parent.mkdir(parents=True, exist_ok=True)
-    if hook.exists() and "devcapsule" in hook.read_text(encoding="utf-8", errors="ignore"):
+    if hook.exists() and HOOK_SCRIPT in hook.read_text(encoding="utf-8", errors="ignore"):
         # already installed — idempotent, do not clobber other hooks
         hook.chmod(hook.stat().st_mode | 0o111)
         return hook
@@ -50,9 +50,23 @@ def uninstall(cwd: str) -> bool:
     if gd is None:
         return False
     hook = gd / "hooks" / HOOK_NAME
-    if hook.exists() and "devcapsule" in hook.read_text(encoding="utf-8", errors="ignore"):
+    if not hook.exists():
+        return False
+
+    text = hook.read_text(encoding="utf-8", errors="ignore")
+    if HOOK_SCRIPT not in text:
+        return False
+
+    if text == HOOK_SCRIPT:
         hook.unlink()
         return True
+
+    remaining = text.replace("\n" + HOOK_SCRIPT, "", 1).replace(HOOK_SCRIPT, "", 1)
+    if remaining.strip():
+        hook.write_text(remaining, encoding="utf-8")
+    else:
+        hook.unlink()
+    return True
     return False
 
 
@@ -61,4 +75,4 @@ def is_installed(cwd: str) -> bool:
     if gd is None:
         return False
     hook = gd / "hooks" / HOOK_NAME
-    return hook.exists() and "devcapsule" in hook.read_text(encoding="utf-8", errors="ignore")
+    return hook.exists() and HOOK_SCRIPT in hook.read_text(encoding="utf-8", errors="ignore")
