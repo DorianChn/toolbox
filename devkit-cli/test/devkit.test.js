@@ -50,6 +50,14 @@ test('hashStream hashes a readable stream', async () => {
   assert.equal(digest, createHash('sha256').update('hello world').digest('hex'));
 });
 
+test('hashStream rejects a stream that closes before end', async () => {
+  const stream = new Readable({ read() {} });
+  const digest = hashStream(stream);
+  stream.emit('data', Buffer.from('partial'));
+  stream.emit('close');
+  await assert.rejects(digest, /closed before end/);
+});
+
 test('generate returns the requested number of unique uuids', () => {
   const ids = generate(50);
   assert.equal(ids.length, 50);

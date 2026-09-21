@@ -26,6 +26,7 @@ export function hashStream(stream, algo = 'sha256') {
   return new Promise((resolve, reject) => {
     const digest = createHash(algo);
     let settled = false;
+    let ended = false;
 
     const finish = () => {
       if (settled) return;
@@ -42,8 +43,13 @@ export function hashStream(stream, algo = 'sha256') {
     stream.on('error', fail);
     digest.on('error', fail);
     stream.on('data', (chunk) => digest.update(chunk));
-    stream.on('end', finish);
-    stream.on('close', finish);
+    stream.on('end', () => {
+      ended = true;
+      finish();
+    });
+    stream.on('close', () => {
+      if (!ended) fail(new Error('input stream closed before end'));
+    });
   });
 }
 
