@@ -13,6 +13,10 @@
  * project stays dependency-free.
  */
 
+function isNegativeNumber(token) {
+  return /^-\d+(?:\.\d+)?$/.test(token);
+}
+
 /**
  * @param {string[]} argv
  * @param {{ boolean?: string[], alias?: Record<string, string> }} [options]
@@ -52,7 +56,7 @@ export function parseArgs(argv, options = {}) {
       }
 
       const next = argv[i + 1];
-      if (next !== undefined && !next.startsWith('-')) {
+      if (next !== undefined && (!next.startsWith('-') || isNegativeNumber(next))) {
         flags[body] = next;
         i += 1;
       } else {
@@ -71,7 +75,7 @@ export function parseArgs(argv, options = {}) {
       }
 
       const next = argv[i + 1];
-      if (next !== undefined && !next.startsWith('-')) {
+      if (next !== undefined && (!next.startsWith('-') || isNegativeNumber(next))) {
         flags[long] = next;
         i += 1;
       } else {

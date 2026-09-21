@@ -9,7 +9,7 @@ import { hashText, hashStream } from '../src/commands/hash.js';
 import { generate } from '../src/commands/uuid.js';
 import { sortDeep, describeShape } from '../src/commands/json.js';
 import { encode, decode } from '../src/commands/b64.js';
-import { generatePassword, generatePin, entropyBits, alphabetSize } from '../src/commands/pass.js';
+import { generatePassword, generatePin, entropyBits, alphabetSize, run as runPass } from '../src/commands/pass.js';
 import { interpret, describe } from '../src/commands/ts.js';
 import { parseArgs, readInt, UsageError } from '../src/args.js';
 
@@ -156,4 +156,11 @@ test('readInt falls back and throws on bad input', () => {
   assert.equal(readInt({}, 'count', 7), 7);
   assert.equal(readInt({ count: '12' }, 'count', 1), 12);
   assert.throws(() => readInt({ count: 'abc' }, 'count', 1), UsageError);
+});
+
+test('parseArgs preserves negative numeric values for numeric flags', async () => {
+  const { flags } = parseArgs(['--length', '-1']);
+  assert.equal(flags.length, '-1');
+  assert.equal(parseArgs(['-n', '-1'], { alias: { n: 'count' } }).flags.count, '-1');
+  await assert.rejects(() => runPass(['--length', '-1']), /--length must be at least 4/);
 });
