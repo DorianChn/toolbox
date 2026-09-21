@@ -35,6 +35,17 @@ class Config:
         return bool(self.api_key.strip())
 
 
+def display_config_value(key: str, value: str) -> str:
+    """Keep credentials out of command output while preserving useful context."""
+    if key != "api_key":
+        return value
+    if not value:
+        return "(未配置)"
+    if len(value) <= 10:
+        return "****"
+    return f"{value[:6]}...{value[-4:]}"
+
+
 def load() -> Config:
     path = _config_path()
     if not path.exists():
