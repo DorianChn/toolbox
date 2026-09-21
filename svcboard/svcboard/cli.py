@@ -32,7 +32,12 @@ def _render_markdown(services: List[Service]) -> str:
         "|-----:|-------|------|----:|---------|---------|---------|",
     ]
     for s in services:
-        cmd = (s.cmdline or "").replace("|", "\\|").replace("\n", " ")
+        cmd = (
+            (s.cmdline or "")
+            .replace("|", "\\|")
+            .replace("`", "&#96;")
+            .replace("\n", " ")
+        )
         lines.append(
             f"| {s.port} | {s.proto} | {s.host} | {s.pid or '-'} "
             f"| {s.name or '-'} | {s.hint or '-'} | {cmd} |"

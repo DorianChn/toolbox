@@ -56,6 +56,22 @@ class ScanTests(unittest.TestCase):
 
         self.assertIn("python app.py\\|--debug next", markdown)
 
+    def test_markdown_escapes_command_code_delimiters(self):
+        service = Service(
+            port=8100,
+            host="127.0.0.1",
+            proto="tcp",
+            pid=None,
+            name="python",
+            cmdline="python -c `print('ready')`",
+            hint=None,
+        )
+
+        markdown = _render_markdown([service])
+
+        self.assertIn("python -c &#96;print('ready')&#96;", markdown)
+        self.assertNotIn("`print('ready')`", markdown)
+
 
 if __name__ == "__main__":
     unittest.main()
